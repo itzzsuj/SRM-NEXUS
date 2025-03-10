@@ -1,71 +1,45 @@
 import express from "express";
 import Profile from "../models/Profile.js";
-import authMiddleware from "../middleware/authMiddleware.js"; // Middleware to check authentication
+import authMiddleware from "../middleware/authMiddleware.js";
+import multer from "multer";
 
 const router = express.Router();
+const upload = multer({ storage: multer.memoryStorage() }); // ✅ Handle file uploads
 
-// 📌 GET Profile for a User
-router.get("/:userId", authMiddleware, async (req, res) => {
+// 📌 CREATE Profile
+router.post("/", authMiddleware, upload.single("profilePicture"), async (req, res) => {
   try {
-    const profile = await Profile.findOne({ userId: req.params.userId });
-    if (!profile) {
-      return res.status(404).json({ error: "Profile not found" });
-    }
-    res.json({ profile });
-  } catch (error) {
-    console.error("Error fetching profile:", error);
-    res.status(500).json({ error: "Server error" });
-  }
-});
+    const { userId, name, email, phone, bio, skills, resume, education, experience, linkedin, github } = req.body;
 
-router.post("/", authMiddleware, async (req, res) => {
-  try {
-    const { userId, bio, skills, resume } = req.body;
-
-    if (!userId) {
-      return res.status(400).json({ error: "User ID is required." });
+    if (!userId || !name || !email || !phone || !bio || !skills || !resume || !education || !experience) {
+      return res.status(400).json({ error: "All required fields must be provided." });
     }
 
-    // Check if profile already exists
-    let profile = await Profile.findOne({ userId });
-    if (profile) {
+    let profileExists = await Profile.findOne({ userId });
+    if (profileExists) {
       return res.status(400).json({ error: "Profile already exists" });
     }
 
-    // Create new profile
-    profile = new Profile({
+    const newProfile = new Profile({
       userId,
+      name,
+      email,
+      phone,
       bio,
-      skills,
+      skills: skills.split(","), // ✅ Convert skills from comma-separated string to array
       resume,
+      education,
+      experience,
+      linkedin,
+      github,
+      profilePicture: req.file ? req.file.buffer.toString("base64") : null, // ✅ Handle image upload
     });
 
-    await profile.save();
-    res.status(201).json({ message: "Profile created!", profile });
+    await newProfile.save();
+    res.status(201).json({ message: "Profile created!", profile: newProfile });
+
   } catch (error) {
     console.error("Error creating profile:", error);
-    res.status(500).json({ error: "Server error" });
-  }
-});
-
-
-// 📌 UPDATE Profile
-router.put("/:userId", authMiddleware, async (req, res) => {
-  try {
-    const { bio, skills, resume } = req.body;
-    let profile = await Profile.findOneAndUpdate(
-      { userId: req.params.userId },
-      { bio, skills, resume },
-      { new: true }
-    );
-
-    if (!profile) {
-      return res.status(404).json({ error: "Profile not found" });
-    }
-
-    res.json({ message: "Profile updated!", profile });
-  } catch (error) {
-    console.error("Error updating profile:", error);
     res.status(500).json({ error: "Server error" });
   }
 });

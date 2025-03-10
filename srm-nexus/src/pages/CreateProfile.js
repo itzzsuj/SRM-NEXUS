@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import EditIcon from "@mui/icons-material/Edit";
-import Sidebar from "./Sidebar"; // ✅ Import Sidebar Component
+import Sidebar from "./Sidebar"; 
 
 const CreateProfile = () => {
   const navigate = useNavigate();
@@ -30,7 +30,10 @@ const CreateProfile = () => {
 
   const handleFileChange = (e) => {
     if (e.target.files.length > 0) {
-      setProfileData({ ...profileData, profilePicture: e.target.files[0] });
+      setProfileData({ 
+        ...profileData, 
+        profilePicture: e.target.files[0] 
+      });
     }
   };
 
@@ -49,15 +52,24 @@ const CreateProfile = () => {
       const decodedToken = jwtDecode(token);
       const userId = decodedToken.userId;
 
-      // Creating FormData for file uploads
       const formData = new FormData();
       formData.append("userId", userId);
+      
       Object.keys(profileData).forEach((key) => {
-        if (profileData[key]) formData.append(key, profileData[key]);
+        if (profileData[key]) {
+          if (key === "skills") {
+            formData.append(key, profileData[key].split(",")); // ✅ Convert skills to an array
+          } else {
+            formData.append(key, profileData[key]);
+          }
+        }
       });
 
-      // API Request
-      const response = await axios.post("http://localhost:5001/profile", formData, {
+      if (profileData.profilePicture) {
+        formData.append("profilePicture", profileData.profilePicture);
+      }
+
+      await axios.post("http://localhost:5001/profile", formData, {
         headers: { 
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
@@ -74,17 +86,14 @@ const CreateProfile = () => {
 
   return (
     <Box sx={{ display: "flex", minHeight: "100vh", background: "#F5F7FA" }}>
-      {/* ✅ Sidebar */}
       <Sidebar />
 
-      {/* ✅ Main Content */}
       <Box sx={{ flexGrow: 1, p: 4 }}>
         <Typography variant="h4" fontWeight="bold" mb={3} color="#333">
           Profile Settings
         </Typography>
 
         <Grid container spacing={3}>
-          {/* ✅ Profile Info Card */}
           <Grid item xs={12} md={4}>
             <Paper sx={{ p: 4, textAlign: "center", borderRadius: "12px", boxShadow: 3 }}>
               <Avatar
@@ -96,7 +105,11 @@ const CreateProfile = () => {
                   fontSize: "2rem",
                   fontWeight: "bold",
                 }}
-                src={profileData.profilePicture ? URL.createObjectURL(profileData.profilePicture) : undefined}
+                src={
+                  profileData.profilePicture 
+                    ? URL.createObjectURL(profileData.profilePicture) 
+                    : undefined
+                }
               >
                 {!profileData.profilePicture && "U"}
               </Avatar>
@@ -122,7 +135,6 @@ const CreateProfile = () => {
             </Paper>
           </Grid>
 
-          {/* ✅ Profile Form Card */}
           <Grid item xs={12} md={8}>
             <Paper sx={{ p: 4, borderRadius: "12px", boxShadow: 3 }}>
               <Typography variant="h6" fontWeight="bold" mb={2}>

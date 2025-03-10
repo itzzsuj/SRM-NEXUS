@@ -19,6 +19,7 @@
     "framer-motion": "^12.4.7",
     "gsap": "^3.12.7",
     "jwt-decode": "^4.0.0",
+    "multer": "^1.4.5-lts.1",
     "react": "^19.0.0",
     "react-bits": "^1.0.5",
     "react-dom": "^19.0.0",

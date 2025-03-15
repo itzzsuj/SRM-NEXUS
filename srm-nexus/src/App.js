@@ -5,6 +5,8 @@ import Login from "./login";
 import Signup from "./signup";
 import StudentDashboard from "./pages/StudentDashboard";
 import CreateProfile from "./pages/CreateProfile";
+import ProfileDashboard from "./pages/ProfileDashboard";
+import EditProfile from "./pages/EditProfile";
 import "./App.css"; // Ensure styles are correctly imported
 
 function App() {
@@ -16,6 +18,8 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/student-dashboard" element={<StudentDashboard />} />
         <Route path="/create-profile" element={<CreateProfile />} />
+        <Route path="/profile-dashboard" element={<ProfileDashboard/>}/>
+        <Route path="/edit-profile" element={<EditProfile />} />
       </Routes>
     </BrowserRouter>
   );

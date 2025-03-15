@@ -1,12 +1,11 @@
 import React, { useState } from "react";
-import { 
-  Box, TextField, Button, Typography, Paper, Avatar, Grid, Divider, IconButton 
+import {
+  Box, TextField, Button, Typography, Paper, Avatar, Grid, Divider, IconButton
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import EditIcon from "@mui/icons-material/Edit";
-import Sidebar from "./Sidebar"; 
 
 const CreateProfile = () => {
   const navigate = useNavigate();
@@ -30,9 +29,9 @@ const CreateProfile = () => {
 
   const handleFileChange = (e) => {
     if (e.target.files.length > 0) {
-      setProfileData({ 
-        ...profileData, 
-        profilePicture: e.target.files[0] 
+      setProfileData({
+        ...profileData,
+        profilePicture: e.target.files[0],
       });
     }
   };
@@ -48,17 +47,16 @@ const CreateProfile = () => {
         return;
       }
 
-      // Decode JWT to extract userId
       const decodedToken = jwtDecode(token);
       const userId = decodedToken.userId;
 
       const formData = new FormData();
       formData.append("userId", userId);
-      
+
       Object.keys(profileData).forEach((key) => {
         if (profileData[key]) {
           if (key === "skills") {
-            formData.append(key, profileData[key].split(",")); // ✅ Convert skills to an array
+            formData.append(key, profileData[key].split(",")); // Convert skills to array
           } else {
             formData.append(key, profileData[key]);
           }
@@ -69,15 +67,16 @@ const CreateProfile = () => {
         formData.append("profilePicture", profileData.profilePicture);
       }
 
-      await axios.post("http://localhost:5001/profile", formData, {
-        headers: { 
+      const response = await axios.post("http://localhost:5001/profile", formData, {
+        headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
         },
       });
 
+      console.log("Profile creation response:", response.data); // Debugging
       alert("🎉 Profile Created Successfully!");
-      navigate("/student-dashboard");
+      navigate("/profile-dashboard");
     } catch (error) {
       console.error("❌ Error creating profile:", error.response?.data?.error || error.message);
       alert(`Something went wrong: ${error.response?.data?.error || error.message}`);
@@ -86,8 +85,6 @@ const CreateProfile = () => {
 
   return (
     <Box sx={{ display: "flex", minHeight: "100vh", background: "#F5F7FA" }}>
-      <Sidebar />
-
       <Box sx={{ flexGrow: 1, p: 4 }}>
         <Typography variant="h4" fontWeight="bold" mb={3} color="#333">
           Profile Settings
@@ -106,8 +103,8 @@ const CreateProfile = () => {
                   fontWeight: "bold",
                 }}
                 src={
-                  profileData.profilePicture 
-                    ? URL.createObjectURL(profileData.profilePicture) 
+                  profileData.profilePicture
+                    ? URL.createObjectURL(profileData.profilePicture)
                     : undefined
                 }
               >

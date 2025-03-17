@@ -27,7 +27,12 @@ const Login = () => {
         alert("🎉 Login Successful!");
 
         // ✅ Redirect based on user type
-        navigate(data.user.userType === "student" ? "/student-dashboard" : "/alumni-dashboard");
+        if (data.user.userType === "student") {
+          navigate("/student-dashboard");
+        } else if (data.user.userType === "alumni") {
+          // Redirect alumni to alumni-dashboard (AlumniDashboard will handle profile check)
+          navigate("/alumni-dashboard");
+        }
       } else {
         setError(data.error || "Invalid credentials. Please try again.");
       }

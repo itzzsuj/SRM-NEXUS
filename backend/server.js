@@ -4,8 +4,8 @@ import cors from "cors";
 import dotenv from "dotenv";
 
 import authRoutes from "./routes/authRoutes.js"; // Authentication Routes
-import profileRoutes from "./routes/profileRoutes.js"; // Profile Routes
-
+import profileRoutes from "./routes/profileRoutes.js"; // Student Profile Routes
+import AlumniProfileRoutes from "./routes/AlumniProfileRoutes.js"
 dotenv.config();
 const app = express();
 
@@ -26,8 +26,9 @@ const connectDB = async () => {
 connectDB();
 
 // Use Routes
-app.use("/auth", authRoutes);
-app.use("/profile", profileRoutes);
+app.use("/auth", authRoutes); // Authentication routes (login, signup)
+app.use("/profile", profileRoutes); // Student profile routes
+app.use("/alumni-profile", AlumniProfileRoutes); // Alumni profile routes
 
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));

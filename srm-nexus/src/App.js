@@ -7,6 +7,9 @@ import StudentDashboard from "./pages/StudentDashboard";
 import CreateProfile from "./pages/CreateProfile";
 import ProfileDashboard from "./pages/ProfileDashboard";
 import EditProfile from "./pages/EditProfile";
+import AlumniDashboard from "./pages/AlumniDashboard";
+import CreateAlumniProfile from "./pages/CreateAlumniProfile";
+import AlumniProfileDash from "./pages/AlumniProfileDash";
 import "./App.css"; // Ensure styles are correctly imported
 
 function App() {
@@ -20,6 +23,10 @@ function App() {
         <Route path="/create-profile" element={<CreateProfile />} />
         <Route path="/profile-dashboard" element={<ProfileDashboard/>}/>
         <Route path="/edit-profile" element={<EditProfile />} />
+        <Route path="/alumni-dashboard" element={<AlumniDashboard />} />
+        <Route path="/create-alumni-profile" element={<CreateAlumniProfile/>}/>
+        <Route path="/alumni-profile-dash" element={<AlumniProfileDash/>}/>
+
       </Routes>
     </BrowserRouter>
   );

@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-import { Box, Typography, TextField, Button, CircularProgress } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { Box, TextField, Button, Typography } from "@mui/material";
 import axios from "axios";
-import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 
 const CreateAlumniProfile = () => {
   const navigate = useNavigate();
@@ -13,152 +12,54 @@ const CreateAlumniProfile = () => {
     bio: "",
     currentCompany: "",
     role: "",
-    openToReferral: false,
     skills: "",
     linkedin: "",
     github: "",
     resume: "",
   });
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setError("");
-
     try {
+      const userId = localStorage.getItem("userId");
       const token = localStorage.getItem("token");
-      const decodedToken = jwtDecode(token);
-      const userId = decodedToken.userId;
 
-      const response = await axios.post(
-        "http://localhost:5001/alumni-profile",
-        { ...formData, userId },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      await axios.post("http://localhost:5001/alumni-profile", { ...formData, userId }, {
+        headers: { Authorization: `Bearer ${token}` },
+    });
 
-      console.log("Profile created:", response.data);
-      navigate("/alumni-profile-dash");
+
+      alert("Profile Created Successfully!");
+      navigate("/alumni-profile-dashboard");
     } catch (error) {
-      console.error("Error creating profile:", error.response?.data?.error || error.message);
-      setError("Failed to create profile. Please try again.");
-    } finally {
-      setLoading(false);
+      console.error("Error creating profile:", error);
+      setError("Something went wrong. Please try again.");
     }
   };
 
   return (
-    <Box sx={{ p: 4 }}>
-      <Typography variant="h4" gutterBottom>
-        Create Alumni Profile
-      </Typography>
-      <form onSubmit={handleSubmit}>
-        <TextField
-          fullWidth
-          label="Name"
-          name="name"
-          value={formData.name}
-          onChange={handleChange}
-          margin="normal"
-          required
-        />
-        <TextField
-          fullWidth
-          label="Email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          margin="normal"
-          required
-        />
-        <TextField
-          fullWidth
-          label="Phone"
-          name="phone"
-          value={formData.phone}
-          onChange={handleChange}
-          margin="normal"
-          required
-        />
-        <TextField
-          fullWidth
-          label="Bio"
-          name="bio"
-          value={formData.bio}
-          onChange={handleChange}
-          margin="normal"
-          required
-        />
-        <TextField
-          fullWidth
-          label="Current Company"
-          name="currentCompany"
-          value={formData.currentCompany}
-          onChange={handleChange}
-          margin="normal"
-          required
-        />
-        <TextField
-          fullWidth
-          label="Role"
-          name="role"
-          value={formData.role}
-          onChange={handleChange}
-          margin="normal"
-          required
-        />
-        <TextField
-          fullWidth
-          label="Skills (comma-separated)"
-          name="skills"
-          value={formData.skills}
-          onChange={handleChange}
-          margin="normal"
-          required
-        />
-        <TextField
-          fullWidth
-          label="LinkedIn"
-          name="linkedin"
-          value={formData.linkedin}
-          onChange={handleChange}
-          margin="normal"
-        />
-        <TextField
-          fullWidth
-          label="GitHub"
-          name="github"
-          value={formData.github}
-          onChange={handleChange}
-          margin="normal"
-        />
-        <TextField
-          fullWidth
-          label="Resume"
-          name="resume"
-          value={formData.resume}
-          onChange={handleChange}
-          margin="normal"
-        />
-        <Button type="submit" variant="contained" disabled={loading}>
-          {loading ? <CircularProgress size={24} /> : "Create Profile"}
-        </Button>
-      </form>
-      {error && (
-        <Typography color="error" sx={{ mt: 2 }}>
-          {error}
-        </Typography>
-      )}
+    <Box display="flex" flexDirection="column" alignItems="center" p={4}>
+      <Typography variant="h4" mb={3}>Create Alumni Profile</Typography>
+
+      {error && <Typography color="red">{error}</Typography>}
+
+      <TextField label="Name" name="name" fullWidth margin="normal" onChange={handleChange} />
+      <TextField label="Email" name="email" fullWidth margin="normal" onChange={handleChange} />
+      <TextField label="Phone" name="phone" fullWidth margin="normal" onChange={handleChange} />
+      <TextField label="Bio" name="bio" fullWidth margin="normal" onChange={handleChange} multiline rows={3} />
+      <TextField label="Current Company" name="currentCompany" fullWidth margin="normal" onChange={handleChange} />
+      <TextField label="Role" name="role" fullWidth margin="normal" onChange={handleChange} />
+      <TextField label="Skills (comma separated)" name="skills" fullWidth margin="normal" onChange={handleChange} />
+      <TextField label="LinkedIn" name="linkedin" fullWidth margin="normal" onChange={handleChange} />
+      <TextField label="GitHub" name="github" fullWidth margin="normal" onChange={handleChange} />
+      <TextField label="Resume (URL)" name="resume" fullWidth margin="normal" onChange={handleChange} />
+
+      <Button variant="contained" onClick={handleSubmit} sx={{ mt: 2 }}>Create Profile</Button>
     </Box>
   );
 };

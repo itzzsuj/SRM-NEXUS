@@ -9,7 +9,7 @@ import ProfileDashboard from "./pages/ProfileDashboard";
 import EditProfile from "./pages/EditProfile";
 import AlumniDashboard from "./pages/AlumniDashboard";
 import CreateAlumniProfile from "./pages/CreateAlumniProfile";
-import AlumniProfileDash from "./pages/AlumniProfileDash";
+import AlumniProfileDashboard from "./pages/AlumniProfileDashboard";
 import "./App.css"; // Ensure styles are correctly imported
 
 function App() {
@@ -24,8 +24,9 @@ function App() {
         <Route path="/profile-dashboard" element={<ProfileDashboard/>}/>
         <Route path="/edit-profile" element={<EditProfile />} />
         <Route path="/alumni-dashboard" element={<AlumniDashboard />} />
-        <Route path="/create-alumni-profile" element={<CreateAlumniProfile/>}/>
-        <Route path="/alumni-profile-dash" element={<AlumniProfileDash/>}/>
+        <Route path="/create-alumni-profile" element={<CreateAlumniProfile />} />
+        <Route path="/alumni-profile-dashboard" element={<AlumniProfileDashboard />} />
+        
 
       </Routes>
     </BrowserRouter>
